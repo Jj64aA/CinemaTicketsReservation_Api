@@ -10,7 +10,8 @@ class MovieSerializer(serializers.ModelSerializer) :
 class ReservationSerializer(serializers.ModelSerializer) :
    class Meta :
       model = Reservation
-      fields = '__all__'
+      #fields = '__all__'
+      fields = ['guest' , 'movie' ]
 
 class GuestSerializer(serializers.ModelSerializer) :
    class Meta :
