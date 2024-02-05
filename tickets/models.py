@@ -1,5 +1,12 @@
-from django.db import models
 
+#-------- Django -----------------------------
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver 
+from django.conf import settings
+from django.contrib.auth.models import User
+#--------- REST ------------------------------
+from rest_framework.authtoken.models import Token
 # Create your models here.
 
 
@@ -20,3 +27,9 @@ class Reservation(models.Model):
    movie = models.ForeignKey(Movie , related_name = "reservation" , on_delete = models.CASCADE)
    def __str__(self) : 
       return f"{self.guest.name}//{self.movie.movie}"
+   
+
+@receiver(post_save , sender = User)
+def TokenCreate(sender ,instance ,created,  **kwargs) : 
+   if created : 
+      Token.objects.create( user = instance)   

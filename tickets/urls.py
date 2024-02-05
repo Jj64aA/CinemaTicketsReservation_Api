@@ -2,7 +2,7 @@ from django.urls import path , include
 from . import views
 #---------------Rest---------------
 from rest_framework.routers import DefaultRouter
-
+from rest_framework.authtoken.views import obtain_auth_token
 
 
 router = DefaultRouter()
@@ -24,5 +24,6 @@ urlpatterns = [
    path('viewsets/', include(router.urls)),
    path('find-movie/', views.find_movie),
    path('new-reservation/', views.new_reservation) , 
-   #path('api-auth', include('rest_framework.urls'))
+   path('api-auth', include('rest_framework.urls')), 
+   path('api-auth-token/' , obtain_auth_token)
 ]
