@@ -28,6 +28,10 @@ class Reservation(models.Model):
    def __str__(self) : 
       return f"{self.guest.name}//{self.movie.movie}"
    
+class Post(models.Model) : 
+   author  = models.ForeignKey(User , on_delete = models.CASCADE)
+   title = models.CharField(max_length = 30)
+   Text = models.TextField()
 
 @receiver(post_save , sender = User)
 def TokenCreate(sender ,instance ,created,  **kwargs) : 

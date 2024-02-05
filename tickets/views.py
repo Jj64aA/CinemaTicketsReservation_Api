@@ -3,16 +3,17 @@ from django.shortcuts import render
 from django.http.response import JsonResponse 
 
 #--------- APP -------------------------------
-from .models import Movie , Guest , Reservation 
-from .serializers import GuestSerializer , ReservationSerializer , MovieSerializer
+from .models import Movie , Guest , Reservation , Post
+from .serializers import GuestSerializer , ReservationSerializer , MovieSerializer , PostSerializer
+from .permissions import IsAuthorOrReadOnly
 #--------- REST ------------------------------
-from rest_framework.decorators import api_view , authentication_classes
+from rest_framework.decorators import api_view , authentication_classes , permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import generics , mixins , viewsets ,filters
 from rest_framework.authentication import BasicAuthentication , TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated 
 #---------------------------------------------
 
 def list_url(request) : 
@@ -99,7 +100,7 @@ class CBV_list(APIView):
       return Response({"msg" : "There's a mistake in creating !"} , status=status.HTTP_400_BAD_REQUEST)
    
 class CBV_pk(APIView):
-  
+   
    def get(self , request , pk , format=None) : 
       try :
           guest = Guest.objects.get(id = pk )
@@ -136,6 +137,7 @@ class MIXINS_list(mixins.ListModelMixin , mixins.CreateModelMixin , generics.Gen
    
    queryset = Guest.objects.all()
    serializer_class = GuestSerializer
+   
 
    def get(self , request) : 
       return self.list(request)
@@ -146,6 +148,7 @@ class MIXINS_pk(mixins.RetrieveModelMixin , mixins.UpdateModelMixin, mixins.Dest
    
    queryset = Guest.objects.all()
    serializer_class = GuestSerializer   
+   
 
    def get(self , request , pk) : 
       return self.retrieve(request ,pk)
@@ -228,3 +231,9 @@ def new_reservation(request) :
    reservation.save()
 
    return Response({"msg" : "operation successful !"})
+
+class Post_pk(generics.RetrieveUpdateDestroyAPIView) :
+   queryset = Post.objects.all()
+   serializer_class = PostSerializer
+   authentication_classes = [TokenAuthentication]
+   permission_classes = [IsAuthorOrReadOnly]
